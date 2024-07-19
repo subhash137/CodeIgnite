@@ -1,6 +1,7 @@
 import cv2
 from ultralytics import YOLO
 import torch
+import os
 
 # Check if CUDA is available
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -27,6 +28,13 @@ resize_factor = 0.5
 frame_skip = 2
 frame_count = 0
 
+# Create a directory to save snapshots
+snapshot_dir = 'snapshots'
+os.makedirs(snapshot_dir, exist_ok=True)
+
+# Variable to track if a snapshot has been taken in the current frame
+snapshot_taken = False
+
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
@@ -42,6 +50,9 @@ while cap.isOpened():
     # Perform object detection
     results = model(resized_frame)
 
+    # Reset snapshot flag for the current frame
+    snapshot_taken = False
+
     # Process results
     for result in results:
         boxes = result.boxes.xyxy  # Extract bounding box coordinates
@@ -56,7 +67,14 @@ while cap.isOpened():
             # Draw the bounding box
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
             cv2.putText(frame, f'{label} {confidence:.2f}', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-            print(label)
+            print(f'Detected object: {label} with confidence {confidence:.2f}')
+
+            # Take snapshot if not already taken for this frame
+            if not snapshot_taken:
+                snapshot_filename = os.path.join(snapshot_dir, f'snapshot_{frame_count}.jpg')
+                cv2.imwrite(snapshot_filename, frame)
+                print(f'Snapshot saved as: {snapshot_filename}')
+                snapshot_taken = True
 
     # Write the frame to the output video
     out.write(frame)
