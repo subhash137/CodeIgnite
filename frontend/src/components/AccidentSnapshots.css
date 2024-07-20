@@ -1,0 +1,16 @@
+/* src/App.css or any relevant CSS file */
+
+.snapshot-gallery {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.snapshot-item {
+  margin: 10px;
+}
+
+.snapshot-item img {
+  max-width: 200px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+}
