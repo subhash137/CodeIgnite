@@ -193,9 +193,9 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 
 # Twilio credentials
-account_sid = 'ACf265a7fc0a5c92850d9a664e796343e5'
-auth_token = '9adb31b646cec076031f28ed816e5fc0'
-twilio_number = '+12513253346'
+account_sid = ''
+auth_token = ''
+twilio_number = ''
 client = Client(account_sid, auth_token)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
