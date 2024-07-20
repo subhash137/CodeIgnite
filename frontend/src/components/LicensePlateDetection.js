@@ -25,6 +25,7 @@ const LicensePlateDetection = () => {
         try {
             const response = await axios.post('http://127.0.0.1:8000/upload', formData);
             const data = response.data;
+            // Ensure plates are set in the order received
             setPlates(data.plates);
             setMessage('File uploaded successfully.');
         } catch (error) {
@@ -42,17 +43,27 @@ const LicensePlateDetection = () => {
             {plates.length > 0 && (
                 <div className="plates-list">
                     <h2>Detected Plates</h2>
-                    {plates.map((plate, index) => (
-                        <div key={index} className="plate-item">
-                            <img src={`data:image/png;base64,${plate.image}`} alt="License Plate" />
-                            <p>{plate.text}</p>
+                    {plates.slice().reverse().map((plate, index) => (
+                    <div key={index} className="plate-item">
+                        <img src={`data:image/png;base64,${plate.image}`} alt="License Plate" />
+                        <p><strong>Text:</strong> {plate.text}</p>
+                        {plate.details && (
+                        <div>
+                            <p><strong>Details:</strong></p>
+                            <ul>
+                            {Object.entries(plate.details).map(([key, value]) => (
+                                <li key={key}><strong>{key}:</strong> {value}</li>
+                            ))}
+                            </ul>
                         </div>
+                        )}
+                    </div>
                     ))}
                 </div>
-            )}
+                )}
+
         </div>
     );
 };
 
 export default LicensePlateDetection;
-
